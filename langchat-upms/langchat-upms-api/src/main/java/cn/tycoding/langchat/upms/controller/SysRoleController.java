@@ -21,7 +21,7 @@ import cn.hutool.core.lang.Dict;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.dto.SysRoleDTO;
 import cn.tycoding.langchat.upms.entity.SysRole;
 import cn.tycoding.langchat.upms.service.SysRoleService;
@@ -46,42 +46,42 @@ public class SysRoleController {
     private final SysRoleService sysRoleService;
 
     @GetMapping("/list")
-    public R<List<SysRole>> list(SysRole sysRole) {
-        return R.ok(sysRoleService.list(new LambdaQueryWrapper<SysRole>()
+    public CommonResponse<List<SysRole>> list(SysRole sysRole) {
+        return CommonResponse.ok(sysRoleService.list(new LambdaQueryWrapper<SysRole>()
                 .ne(SysRole::getCode, AuthUtil.ADMINISTRATOR)));
     }
 
     @GetMapping("/page")
-    public R<Dict> page(SysRole role, QueryPage queryPage) {
-        return R.ok(MybatisUtil.getData(sysRoleService.page(role, queryPage)));
+    public CommonResponse<Dict> page(SysRole role, QueryPage queryPage) {
+        return CommonResponse.ok(MybatisUtil.getData(sysRoleService.page(role, queryPage)));
     }
 
     @GetMapping("/{id}")
-    public R<SysRoleDTO> findById(@PathVariable String id) {
-        return R.ok(sysRoleService.findById(id));
+    public CommonResponse<SysRoleDTO> findById(@PathVariable String id) {
+        return CommonResponse.ok(sysRoleService.findById(id));
     }
 
     @PostMapping
     @ApiLog("新增角色")
     @SaCheckPermission("upms:role:add")
-    public R add(@RequestBody SysRoleDTO sysRole) {
+    public CommonResponse add(@RequestBody SysRoleDTO sysRole) {
         sysRoleService.add(sysRole);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改角色")
     @SaCheckPermission("upms:role:update")
-    public R update(@RequestBody SysRoleDTO sysRole) {
+    public CommonResponse update(@RequestBody SysRoleDTO sysRole) {
         sysRoleService.update(sysRole);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除角色")
     @SaCheckPermission("upms:role:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         sysRoleService.delete(id);
-        return R.ok();
+        return CommonResponse.ok();
     }
 }

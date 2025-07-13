@@ -21,7 +21,7 @@ import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.tycoding.langchat.common.core.exception.AuthException;
 import cn.tycoding.langchat.common.core.exception.ServiceException;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.utils.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,96 +51,96 @@ public class GlobalExceptionTranslator {
 
     @ExceptionHandler({ServiceException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public R handleError(ServiceException e) {
+    public CommonResponse handleError(ServiceException e) {
         e.printStackTrace();
-        return R.fail(e.getCode(), e.getMessage());
+        return CommonResponse.fail(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler({AuthException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public R handleError(AuthException e) {
+    public CommonResponse handleError(AuthException e) {
         e.printStackTrace();
-        return R.fail(e.getCode(), e.getMessage());
+        return CommonResponse.fail(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public R handleError(AccessDeniedException e) {
+    public CommonResponse handleError(AccessDeniedException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.FORBIDDEN);
+        return CommonResponse.fail(HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({RedisConnectionFailureException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public R handleError(RedisConnectionFailureException e) {
+    public CommonResponse handleError(RedisConnectionFailureException e) {
         e.printStackTrace();
-        return R.fail("The Redis connection is abnormal");
+        return CommonResponse.fail("The Redis connection is abnormal");
     }
 
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public R handleError(Exception e) {
+    public CommonResponse handleError(Exception e) {
         e.printStackTrace();
-        return R.fail("服务器异常");
+        return CommonResponse.fail("服务器异常");
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public R handleError(MethodArgumentTypeMismatchException e) {
+    public CommonResponse handleError(MethodArgumentTypeMismatchException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.BAD_REQUEST);
+        return CommonResponse.fail(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public R handleError(HttpRequestMethodNotSupportedException e) {
+    public CommonResponse handleError(HttpRequestMethodNotSupportedException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.METHOD_NOT_ALLOWED);
+        return CommonResponse.fail(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public R handleError(HttpMessageNotReadableException e) {
+    public CommonResponse handleError(HttpMessageNotReadableException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.BAD_REQUEST);
+        return CommonResponse.fail(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NotPermissionException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public R handleError(NotPermissionException e) {
+    public CommonResponse handleError(NotPermissionException e) {
         e.printStackTrace();
         boolean isDemoEnv = AuthUtil.isDemoEnv();
         if (isDemoEnv) {
-            return R.fail("演示环境请勿操作");
+            return CommonResponse.fail("演示环境请勿操作");
         }
-        return R.fail("没有操作权限");
+        return CommonResponse.fail("没有操作权限");
     }
 
     @ExceptionHandler({SaTokenException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public R handleError(SaTokenException e) {
+    public CommonResponse handleError(SaTokenException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.UNAUTHORIZED);
+        return CommonResponse.fail(HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({NotLoginException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public R handleError(NotLoginException e) {
+    public CommonResponse handleError(NotLoginException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.UNAUTHORIZED);
+        return CommonResponse.fail(HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({NoResourceFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public R handleError(NoResourceFoundException e) {
+    public CommonResponse handleError(NoResourceFoundException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.UNAUTHORIZED);
+        return CommonResponse.fail(HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({IOException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public R handleError(IOException e) {
+    public CommonResponse handleError(IOException e) {
         e.printStackTrace();
-        return R.fail(HttpStatus.UNAUTHORIZED);
+        return CommonResponse.fail(HttpStatus.UNAUTHORIZED);
     }
 }

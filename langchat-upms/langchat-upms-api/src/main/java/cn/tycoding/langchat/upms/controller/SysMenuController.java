@@ -18,7 +18,7 @@ package cn.tycoding.langchat.upms.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.dto.MenuTree;
 import cn.tycoding.langchat.upms.entity.SysMenu;
 import cn.tycoding.langchat.upms.service.SysMenuService;
@@ -42,46 +42,46 @@ public class SysMenuController {
     private final SysMenuService sysMenuService;
 
     @GetMapping("/tree")
-    public R<List<MenuTree<SysMenu>>> tree(SysMenu sysMenu) {
-        return R.ok(sysMenuService.tree(sysMenu));
+    public CommonResponse<List<MenuTree<SysMenu>>> tree(SysMenu sysMenu) {
+        return CommonResponse.ok(sysMenuService.tree(sysMenu));
     }
 
     @GetMapping("/build")
-    public R<List<MenuTree<SysMenu>>> build() {
-        return R.ok(sysMenuService.build(AuthUtil.getUserId()));
+    public CommonResponse<List<MenuTree<SysMenu>>> build() {
+        return CommonResponse.ok(sysMenuService.build(AuthUtil.getUserId()));
     }
 
     @GetMapping("/list")
-    public R<List<SysMenu>> list(SysMenu sysMenu) {
-        return R.ok(sysMenuService.list(sysMenu));
+    public CommonResponse<List<SysMenu>> list(SysMenu sysMenu) {
+        return CommonResponse.ok(sysMenuService.list(sysMenu));
     }
 
     @GetMapping("/{id}")
-    public R<SysMenu> findById(@PathVariable String id) {
-        return R.ok(sysMenuService.getById(id));
+    public CommonResponse<SysMenu> findById(@PathVariable String id) {
+        return CommonResponse.ok(sysMenuService.getById(id));
     }
 
     @PostMapping
     @ApiLog("新增菜单")
     @SaCheckPermission("upms:menu:add")
-    public R add(@RequestBody SysMenu sysMenu) {
+    public CommonResponse add(@RequestBody SysMenu sysMenu) {
         sysMenuService.add(sysMenu);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改菜单")
     @SaCheckPermission("upms:menu:update")
-    public R update(@RequestBody SysMenu sysMenu) {
+    public CommonResponse update(@RequestBody SysMenu sysMenu) {
         sysMenuService.update(sysMenu);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除菜单")
     @SaCheckPermission("upms:menu:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         sysMenuService.delete(id);
-        return R.ok();
+        return CommonResponse.ok();
     }
 }

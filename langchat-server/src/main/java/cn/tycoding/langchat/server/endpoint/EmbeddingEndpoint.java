@@ -30,7 +30,7 @@ import cn.tycoding.langchat.common.ai.dto.ChatReq;
 import cn.tycoding.langchat.common.ai.dto.EmbeddingR;
 import cn.tycoding.langchat.common.core.exception.ServiceException;
 import cn.tycoding.langchat.common.core.task.TaskManager;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.server.service.EmbeddingService;
 import cn.tycoding.langchat.upms.utils.AuthUtil;
 import lombok.AllArgsConstructor;
@@ -58,7 +58,7 @@ public class EmbeddingEndpoint {
 
     @PostMapping("/text")
     @SaCheckPermission("aigc:embedding:text")
-    public R text(@RequestBody AigcDocs data) {
+    public CommonResponse text(@RequestBody AigcDocs data) {
         if (StrUtil.isBlankIfStr(data.getContent())) {
             throw new ServiceException("文档内容不能为空");
         }
@@ -89,12 +89,12 @@ public class EmbeddingEndpoint {
             // del data
             aigcKnowledgeService.removeSlicesOfDoc(data.getId());
         }
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PostMapping("/docs/{knowledgeId}")
     @SaCheckPermission("aigc:embedding:docs")
-    public R docs(MultipartFile file, @PathVariable String knowledgeId) {
+    public CommonResponse docs(MultipartFile file, @PathVariable String knowledgeId) {
         String userId = String.valueOf(AuthUtil.getUserId());
         AigcOss oss = aigcOssService.upload(file, userId);
         AigcDocs data = new AigcDocs()
@@ -108,11 +108,11 @@ public class EmbeddingEndpoint {
         TaskManager.submitTask(userId, Executors.callable(() -> {
             embeddingService.embedDocsSlice(data, oss.getUrl());
         }));
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @GetMapping("/re-embed/{docsId}")
-    public R reEmbed(@PathVariable String docsId) {
+    public CommonResponse reEmbed(@PathVariable String docsId) {
         String userId = String.valueOf(AuthUtil.getUserId());
         AigcDocs docs = aigcDocsMapper.selectById(docsId);
         if (docs == null) {
@@ -128,11 +128,11 @@ public class EmbeddingEndpoint {
                 embeddingService.embedDocsSlice(docs, docs.getUrl());
             }));
         }
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PostMapping("/search")
-    public R search(@RequestBody AigcDocs data) {
-        return R.ok(embeddingService.search(data));
+    public CommonResponse search(@RequestBody AigcDocs data) {
+        return CommonResponse.ok(embeddingService.search(data));
     }
 }

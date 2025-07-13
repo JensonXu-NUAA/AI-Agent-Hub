@@ -31,7 +31,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class ServletUtil {
 
     @SneakyThrows
-    public static void write(HttpServletResponse response, R data) {
+    public static void write(HttpServletResponse response, CommonResponse data) {
         response.setStatus(data.getCode());
         response.setHeader("Content-type", "application/json;charset=" + CommonConst.UTF_8);
         response.setCharacterEncoding(CommonConst.UTF_8);
@@ -39,7 +39,7 @@ public class ServletUtil {
     }
 
     @SneakyThrows
-    public static void write(HttpServletResponse response, int status, R data) {
+    public static void write(HttpServletResponse response, int status, CommonResponse data) {
         response.setStatus(status);
         response.setHeader("Content-type", "application/json;charset=" + CommonConst.UTF_8);
         response.setCharacterEncoding(CommonConst.UTF_8);

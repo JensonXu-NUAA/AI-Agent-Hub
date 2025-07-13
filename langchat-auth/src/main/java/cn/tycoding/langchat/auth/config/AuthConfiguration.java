@@ -27,7 +27,7 @@ import cn.tycoding.langchat.auth.utils.SysLogUtil;
 import cn.tycoding.langchat.common.auth.event.LogEvent;
 import cn.tycoding.langchat.common.core.component.SpringContextHolder;
 import cn.tycoding.langchat.common.core.properties.AuthProps;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.entity.SysLog;
 import cn.tycoding.langchat.upms.utils.AuthUtil;
 import com.alibaba.fastjson.JSON;
@@ -57,7 +57,7 @@ public class AuthConfiguration {
             "/auth/logout",
             "/auth/register",
             "/auth/info",
-    };
+    };  // 跳过auth拦截
 
     @Bean
     public SaServletFilter saServletFilter() {
@@ -67,7 +67,8 @@ public class AuthConfiguration {
 
                 .setAuth(obj -> {
                     SaRouter
-                            .match("/upms/**", "/aigc/**", "/app/**")
+                            // .match("/upms/**", "/aigc/**", "/app/**")
+                            .match("/upms/**", "/app/**")
                             .check(StpUtil::checkLogin)
                             .notMatch(skipUrl)
                             .notMatch(authProps.getSkipUrl().toArray(new String[0]))
@@ -89,6 +90,6 @@ public class AuthConfiguration {
         SaHolder.getResponse()
                 .setStatus(HttpStatus.UNAUTHORIZED.value())
                 .setHeader("Content-Type", "application/json;charset=UTF-8");
-        return JSON.toJSONString(R.fail(HttpStatus.UNAUTHORIZED));
+        return JSON.toJSONString(CommonResponse.fail(HttpStatus.UNAUTHORIZED));
     }
 }

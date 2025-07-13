@@ -42,5 +42,3 @@ langchat:
         base-path: langchat/ # 基础路径
         path-patterns: /static/** # 访问路径（默认本地target目录），注意：如果使用本地nginx容器，此路径要修改为nginx存储路径
         storage-path: ./static/ # 存储路径（默认本地target目录），注意：如果使用本地nginx容器，此路径要修改为nginx存储路径
-
-

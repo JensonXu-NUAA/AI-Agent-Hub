@@ -22,9 +22,12 @@ import cn.tycoding.langchat.ai.biz.entity.AigcModel;
 import cn.tycoding.langchat.ai.biz.mapper.AigcModelMapper;
 import cn.tycoding.langchat.ai.biz.service.AigcModelService;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcModelDO;
+import cn.tycoding.langchat.common.repository.mysql.repository.AigcModelRepository;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -38,12 +41,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AigcModelServiceImpl extends ServiceImpl<AigcModelMapper, AigcModel> implements AigcModelService {
 
+    @Resource
+    private final AigcModelRepository aigcModelRepository;
+
     @Override
-    public List<AigcModel> getChatModels() {
-        List<AigcModel> list = baseMapper.selectList(Wrappers.<AigcModel>lambdaQuery()
+    public List<AigcModelDO> getChatModels() {
+        return aigcModelRepository.getChatModels();
+        /*List<AigcModel> list = baseMapper.selectList(Wrappers.<AigcModel>lambdaQuery()
                 .eq(AigcModel::getType, ModelTypeEnum.CHAT.name()));
         list.forEach(this::hide);
-        return list;
+        return list;*/
     }
 
     @Override

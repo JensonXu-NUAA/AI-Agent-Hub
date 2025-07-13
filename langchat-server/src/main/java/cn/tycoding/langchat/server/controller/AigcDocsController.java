@@ -22,7 +22,7 @@ import cn.tycoding.langchat.ai.biz.mapper.AigcDocsMapper;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.server.service.EmbeddingService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -45,14 +45,14 @@ public class AigcDocsController {
     private final EmbeddingService embeddingService;
 
     @GetMapping("/list")
-    public R<List<AigcDocs>> list(AigcDocs data) {
-        return R.ok(docsMapper.selectList(Wrappers.<AigcDocs>lambdaQuery().orderByDesc(AigcDocs::getCreateTime)));
+    public CommonResponse<List<AigcDocs>> list(AigcDocs data) {
+        return CommonResponse.ok(docsMapper.selectList(Wrappers.<AigcDocs>lambdaQuery().orderByDesc(AigcDocs::getCreateTime)));
     }
 
     @GetMapping("/page")
-    public R list(AigcDocs data, QueryPage queryPage) {
+    public CommonResponse list(AigcDocs data, QueryPage queryPage) {
         Page<AigcDocs> page = new Page<>(queryPage.getPage(), queryPage.getLimit());
-        return R.ok(MybatisUtil.getData(docsMapper.selectPage(page, Wrappers.<AigcDocs>lambdaQuery()
+        return CommonResponse.ok(MybatisUtil.getData(docsMapper.selectPage(page, Wrappers.<AigcDocs>lambdaQuery()
                 .eq(data.getKnowledgeId() != null, AigcDocs::getKnowledgeId, data.getKnowledgeId())
                 .eq(data.getSliceStatus() != null, AigcDocs::getSliceStatus, data.getSliceStatus())
                 .orderByDesc(AigcDocs::getCreateTime)
@@ -60,37 +60,37 @@ public class AigcDocsController {
     }
 
     @GetMapping("/{id}")
-    public R<AigcDocs> findById(@PathVariable String id) {
-        return R.ok(docsMapper.selectById(id));
+    public CommonResponse<AigcDocs> findById(@PathVariable String id) {
+        return CommonResponse.ok(docsMapper.selectById(id));
     }
 
     @PostMapping
     @ApiLog("新增文档")
     @SaCheckPermission("aigc:docs:add")
-    public R add(@RequestBody AigcDocs data) {
+    public CommonResponse add(@RequestBody AigcDocs data) {
         docsMapper.insert(data);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改文档")
     @SaCheckPermission("aigc:docs:update")
-    public R update(@RequestBody AigcDocs data) {
+    public CommonResponse update(@RequestBody AigcDocs data) {
         docsMapper.updateById(data);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除文档")
     @SaCheckPermission("aigc:docs:delete")
     @Transactional
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         // 删除切面数据
         embeddingService.clearDocSlices(id);
 
         // 删除文档
         docsMapper.deleteById(id);
-        return R.ok();
+        return CommonResponse.ok();
     }
 }
 

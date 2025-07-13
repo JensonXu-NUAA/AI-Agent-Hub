@@ -33,5 +33,6 @@
         <module>langchat-common-core</module>
         <module>langchat-common-ai</module>
         <module>langchat-common-oss</module>
+        <module>langchat-common-repository</module>
     </modules>
 </project>

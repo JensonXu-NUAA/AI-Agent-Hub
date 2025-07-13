@@ -18,7 +18,7 @@ package cn.tycoding.langchat.common.auth.interceptor;
 
 import cn.tycoding.langchat.common.core.constant.AuthConst;
 import cn.tycoding.langchat.common.core.constant.CacheConst;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.common.core.utils.ServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,7 +52,7 @@ public class CaptchaInterceptor implements HandlerInterceptor {
             String code = ServletRequestUtils.getStringParameter(request, AuthConst.CAPTCHA_FORM_KEY);
             String redisCode = (String) redisTemplate.opsForValue().get(CacheConst.CAPTCHA_PREFIX + headerKey);
             if (code == null || !code.toLowerCase().equals(redisCode)) {
-                ServletUtil.write(response, new R<>(HttpStatus.BAD_REQUEST.value(), AuthConst.CAPTCHA_ERROR_INFO));
+                ServletUtil.write(response, new CommonResponse<>(HttpStatus.BAD_REQUEST.value(), AuthConst.CAPTCHA_ERROR_INFO));
                 return false;
             }
         }

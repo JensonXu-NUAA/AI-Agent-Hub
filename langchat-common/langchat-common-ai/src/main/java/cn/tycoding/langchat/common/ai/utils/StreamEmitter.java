@@ -16,6 +16,7 @@
 
 package cn.tycoding.langchat.common.ai.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.concurrent.ExecutorService;
  * @author tycoding
  * @since 2024/1/30
  */
+@Slf4j
 public class StreamEmitter {
 
     private final SseEmitter emitter;
@@ -41,7 +43,7 @@ public class StreamEmitter {
 //        ExecutorService executor = Executors.newSingleThreadExecutor();
 
         emitter.onCompletion(() -> {
-            System.out.println("SseEmitter 完成");
+            log.info("SseEmitter 完成");
             executor.shutdownNow();
         });
 
@@ -51,7 +53,7 @@ public class StreamEmitter {
         });
 
         emitter.onTimeout(() -> {
-            System.out.println("SseEmitter 超时");
+            log.info("SseEmitter 超时");
             emitter.complete();
             executor.shutdownNow();
         });

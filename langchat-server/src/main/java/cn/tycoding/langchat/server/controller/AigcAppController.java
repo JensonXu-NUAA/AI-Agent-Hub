@@ -28,7 +28,7 @@ import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.exception.ServiceException;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.server.store.AppStore;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -51,45 +51,45 @@ public class AigcAppController {
     private final AigcKnowledgeService knowledgeService;
 
     @GetMapping("/channel/api/{appId}")
-    public R<AigcAppApi> getApiChanel(@PathVariable String appId) {
+    public CommonResponse<AigcAppApi> getApiChanel(@PathVariable String appId) {
         List<AigcAppApi> list = aigcAppApiService.list(Wrappers.<AigcAppApi>lambdaQuery().eq(AigcAppApi::getAppId, appId));
-        return R.ok(list.isEmpty() ? null : list.get(0));
+        return CommonResponse.ok(list.isEmpty() ? null : list.get(0));
     }
 
     @GetMapping("/list")
-    public R<List<AigcApp>> list(AigcApp data) {
-        return R.ok(aigcAppService.list(data));
+    public CommonResponse<List<AigcApp>> list(AigcApp data) {
+        return CommonResponse.ok(aigcAppService.list(data));
     }
 
     @GetMapping("/page")
-    public R<Dict> page(AigcApp data, QueryPage queryPage) {
-        return R.ok(MybatisUtil.getData(aigcAppService.page(MybatisUtil.wrap(data, queryPage),
+    public CommonResponse<Dict> page(AigcApp data, QueryPage queryPage) {
+        return CommonResponse.ok(MybatisUtil.getData(aigcAppService.page(MybatisUtil.wrap(data, queryPage),
                 Wrappers.<AigcApp>lambdaQuery()
                         .like(StringUtils.isNotEmpty(data.getName()), AigcApp::getName, data.getName())
         )));
     }
 
     @GetMapping("/{id}")
-    public R<AigcApp> findById(@PathVariable String id) {
+    public CommonResponse<AigcApp> findById(@PathVariable String id) {
         AigcApp app = aigcAppService.getById(id);
-        return R.ok(app);
+        return CommonResponse.ok(app);
     }
 
     @PostMapping
     @ApiLog("新增应用")
     @SaCheckPermission("aigc:app:add")
-    public R add(@RequestBody AigcApp data) {
+    public CommonResponse add(@RequestBody AigcApp data) {
         data.setCreateTime(new Date());
         data.setSaveTime(new Date());
         aigcAppService.save(data);
         appStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改应用")
     @SaCheckPermission("aigc:app:update")
-    public R update(@RequestBody AigcApp data) {
+    public CommonResponse update(@RequestBody AigcApp data) {
         // 校验知识库是否是同纬度
         List<String> knowledgeIds = data.getKnowledgeIds();
         if (knowledgeIds != null && !knowledgeIds.isEmpty()) {
@@ -111,15 +111,15 @@ public class AigcAppController {
         data.setSaveTime(new Date());
         aigcAppService.updateById(data);
         appStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除应用")
     @SaCheckPermission("aigc:app:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         aigcAppService.removeById(id);
         appStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 }

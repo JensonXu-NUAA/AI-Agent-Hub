@@ -19,7 +19,7 @@ package cn.tycoding.langchat.server.controller;
 import cn.tycoding.langchat.ai.biz.entity.AigcOss;
 import cn.tycoding.langchat.ai.biz.service.AigcOssService;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.utils.AuthUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
@@ -40,31 +40,31 @@ public class AigcOssController {
     private final AigcOssService aigcOssService;
 
     @GetMapping("/list")
-    public R list() {
+    public CommonResponse list() {
         List<AigcOss> list = aigcOssService.list(Wrappers.<AigcOss>lambdaQuery()
                 .eq(AigcOss::getUserId, AuthUtil.getUserId())
                 .orderByDesc(AigcOss::getCreateTime)
         );
-        return R.ok(list);
+        return CommonResponse.ok(list);
     }
 
     @PostMapping("/upload")
     @ApiLog("上传OSS文件")
-    public R upload(MultipartFile file) {
-        return R.ok(aigcOssService.upload(file, String.valueOf(AuthUtil.getUserId())));
+    public CommonResponse upload(MultipartFile file) {
+        return CommonResponse.ok(aigcOssService.upload(file, String.valueOf(AuthUtil.getUserId())));
     }
 
     @PutMapping
     @ApiLog("更新OSS文件资源")
-    public R update(@RequestBody AigcOss data) {
+    public CommonResponse update(@RequestBody AigcOss data) {
         aigcOssService.updateById(data);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除OSS文件资源")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         aigcOssService.removeById(id);
-        return R.ok();
+        return CommonResponse.ok();
     }
 }

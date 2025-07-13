@@ -20,7 +20,7 @@ import cn.hutool.core.lang.Dict;
 import cn.tycoding.langchat.ai.biz.mapper.AigcAppMapper;
 import cn.tycoding.langchat.ai.biz.mapper.AigcKnowledgeMapper;
 import cn.tycoding.langchat.ai.biz.mapper.AigcMessageMapper;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.mapper.SysUserMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
@@ -43,27 +43,27 @@ public class AigcStatisticsController {
     private final AigcAppMapper aigcAppMapper;
 
     @GetMapping("/requestBy30")
-    public R request30Chart() {
-        return R.ok(aigcMessageMapper.getReqChartBy30());
+    public CommonResponse request30Chart() {
+        return CommonResponse.ok(aigcMessageMapper.getReqChartBy30());
     }
 
     @GetMapping("/tokenBy30")
-    public R token30Chart() {
-        return R.ok(aigcMessageMapper.getTokenChartBy30());
+    public CommonResponse token30Chart() {
+        return CommonResponse.ok(aigcMessageMapper.getTokenChartBy30());
     }
 
     @GetMapping("/token")
-    public R tokenChart() {
-        return R.ok(aigcMessageMapper.getTokenChart());
+    public CommonResponse tokenChart() {
+        return CommonResponse.ok(aigcMessageMapper.getTokenChart());
     }
 
     @GetMapping("/request")
-    public R requestChart() {
-        return R.ok(aigcMessageMapper.getReqChart());
+    public CommonResponse requestChart() {
+        return CommonResponse.ok(aigcMessageMapper.getReqChart());
     }
 
     @GetMapping("/home")
-    public R home() {
+    public CommonResponse home() {
         Dict reqData = aigcMessageMapper.getCount();
         Dict totalData = aigcMessageMapper.getTotalSum();
         Dict userData = userMapper.getCount();
@@ -74,6 +74,6 @@ public class AigcStatisticsController {
         result.putAll(totalData);
         result.putAll(userData);
         result.set("totalKnowledge", totalKnowledge.intValue()).set("totalPrompt", totalPrompt.intValue());
-        return R.ok(result);
+        return CommonResponse.ok(result);
     }
 }

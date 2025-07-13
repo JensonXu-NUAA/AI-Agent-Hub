@@ -19,7 +19,7 @@ package cn.tycoding.langchat.upms.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.lang.tree.Tree;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.entity.SysDept;
 import cn.tycoding.langchat.upms.service.SysDeptService;
 import lombok.RequiredArgsConstructor;
@@ -41,43 +41,43 @@ public class SysDeptController {
     private final SysDeptService sysDeptService;
 
     @GetMapping("/list")
-    public R<List<SysDept>> list(SysDept sysDept) {
-        return R.ok(sysDeptService.list(sysDept));
+    public CommonResponse<List<SysDept>> list(SysDept sysDept) {
+        return CommonResponse.ok(sysDeptService.list(sysDept));
     }
 
     @GetMapping("/tree")
-    public R<List<Tree<Object>>> tree(SysDept sysDept) {
-        return R.ok(sysDeptService.tree(sysDept));
+    public CommonResponse<List<Tree<Object>>> tree(SysDept sysDept) {
+        return CommonResponse.ok(sysDeptService.tree(sysDept));
     }
 
     @GetMapping("/{id}")
-    public R<SysDept> findById(@PathVariable String id) {
-        return R.ok(sysDeptService.getById(id));
+    public CommonResponse<SysDept> findById(@PathVariable String id) {
+        return CommonResponse.ok(sysDeptService.getById(id));
     }
 
     @PostMapping
     @ApiLog("新增部门")
     @SaCheckPermission("upms:dept:add")
-    public R add(@RequestBody SysDept sysDept) {
+    public CommonResponse add(@RequestBody SysDept sysDept) {
         sysDept.setParentId(sysDept.getParentId());
         sysDeptService.save(sysDept);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改部门")
     @SaCheckPermission("upms:dept:update")
-    public R update(@RequestBody SysDept sysDept) {
+    public CommonResponse update(@RequestBody SysDept sysDept) {
         sysDept.setParentId(sysDept.getParentId());
         sysDeptService.updateById(sysDept);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除部门")
     @SaCheckPermission("upms:dept:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         sysDeptService.delete(id);
-        return R.ok();
+        return CommonResponse.ok();
     }
 }

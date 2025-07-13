@@ -26,7 +26,7 @@ import java.io.Serializable;
  * @since 2024/1/2
  */
 @Data
-public class R<T> implements Serializable {
+public class CommonResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,69 +36,69 @@ public class R<T> implements Serializable {
 
     private T result;
 
-    public R() {
+    public CommonResponse() {
         super();
     }
 
-    public R(int code, String message) {
+    public CommonResponse(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    protected R(T result) {
+    protected CommonResponse(T result) {
         this.result = result;
     }
 
-    protected R(HttpStatus httpStatus) {
+    protected CommonResponse(HttpStatus httpStatus) {
         this.code = httpStatus.value();
         this.message = httpStatus.getReasonPhrase();
     }
 
-    protected R(T result, HttpStatus httpStatus) {
+    protected CommonResponse(T result, HttpStatus httpStatus) {
         this.result = result;
         this.code = httpStatus.value();
         this.message = httpStatus.getReasonPhrase();
     }
 
-    protected R(Throwable e) {
+    protected CommonResponse(Throwable e) {
         super();
         this.code = HttpStatus.INTERNAL_SERVER_ERROR.value();
         this.message = e.getMessage();
     }
 
-    public static <T> R<T> ok(T result) {
-        return new R(result);
+    public static <T> CommonResponse<T> ok(T result) {
+        return new CommonResponse(result);
     }
 
-    public static <T> R<T> ok(T result, HttpStatus httpStatus) {
-        return new R(result, httpStatus);
+    public static <T> CommonResponse<T> ok(T result, HttpStatus httpStatus) {
+        return new CommonResponse(result, httpStatus);
     }
 
-    public static <T> R<T> ok() {
-        return new R<>();
+    public static <T> CommonResponse<T> ok() {
+        return new CommonResponse<>();
     }
 
-    public static <T> R<T> ok(String message) {
-        return new R<>(HttpStatus.OK.value(), message);
+    public static <T> CommonResponse<T> ok(String message) {
+        return new CommonResponse<>(HttpStatus.OK.value(), message);
     }
 
-    public static <T> R<T> ok(HttpStatus httpStatus) {
-        return new R<>(httpStatus);
+    public static <T> CommonResponse<T> ok(HttpStatus httpStatus) {
+        return new CommonResponse<>(httpStatus);
     }
 
-    public static <T> R<T> fail(String message) {
-        return new R<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), message);
+    public static <T> CommonResponse<T> fail(String message) {
+        return new CommonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), message);
     }
 
-    public static <T> R<T> fail(int code, String message) {
-        return new R<>(code, message);
+    public static <T> CommonResponse<T> fail(int code, String message) {
+        return new CommonResponse<>(code, message);
     }
 
-    public static <T> R<T> fail(HttpStatus status) {
-        return new R<>(status.value(), status.getReasonPhrase());
+    public static <T> CommonResponse<T> fail(HttpStatus status) {
+        return new CommonResponse<>(status.value(), status.getReasonPhrase());
     }
 
-    public static <T> R<T> fail(Throwable e) {
-        return new R<>(e);
+    public static <T> CommonResponse<T> fail(Throwable e) {
+        return new CommonResponse<>(e);
     }
 }

@@ -33,7 +33,8 @@ import cn.tycoding.langchat.common.ai.properties.ChatProps;
 import cn.tycoding.langchat.common.ai.utils.PromptUtil;
 import cn.tycoding.langchat.common.ai.utils.StreamEmitter;
 import cn.tycoding.langchat.common.core.constant.RoleEnum;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcModelDO;
 import cn.tycoding.langchat.server.service.ChatService;
 import cn.tycoding.langchat.upms.utils.AuthUtil;
 import dev.langchain4j.data.message.AiMessage;
@@ -81,7 +82,7 @@ public class ChatEndpoint {
     }
 
     @GetMapping("/app/info")
-    public R<AigcApp> appInfo(@RequestParam String appId, String conversationId) {
+    public CommonResponse<AigcApp> appInfo(@RequestParam String appId, String conversationId) {
         AigcApp app = appService.getById(appId);
         if (StrUtil.isBlank(conversationId)) {
             conversationId = app.getId();
@@ -93,11 +94,11 @@ public class ChatEndpoint {
             PersistentChatMemoryStore.init(conversationId, message);
         }
 
-        return R.ok(app);
+        return CommonResponse.ok(app);
     }
 
     @GetMapping("/chat/messages/{conversationId}")
-    public R messages(@PathVariable String conversationId) {
+    public CommonResponse messages(@PathVariable String conversationId) {
         List<AigcMessage> list = messageService.getMessages(conversationId, String.valueOf(AuthUtil.getUserId()));
 
         // initialize chat memory
@@ -113,38 +114,38 @@ public class ChatEndpoint {
             }
         });
         PersistentChatMemoryStore.init(conversationId, chatMessages);
-        return R.ok(list);
+        return CommonResponse.ok(list);
     }
 
     @DeleteMapping("/chat/messages/clean/{conversationId}")
     @SaCheckPermission("chat:messages:clean")
-    public R cleanMessage(@PathVariable String conversationId) {
+    public CommonResponse cleanMessage(@PathVariable String conversationId) {
         messageService.clearMessage(conversationId);
 
         // clean chat memory
         PersistentChatMemoryStore.clean(conversationId);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PostMapping("/chat/mindmap")
-    public R mindmap(@RequestBody ChatReq req) {
+    public CommonResponse mindmap(@RequestBody ChatReq req) {
         req.setPrompt(PromptUtil.build(req.getMessage(), PromptConst.MINDMAP));
-        return R.ok(new ChatRes(chatService.text(req)));
+        return CommonResponse.ok(new ChatRes(chatService.text(req)));
     }
 
     @PostMapping("/chat/image")
-    public R image(@RequestBody ImageR req) {
+    public CommonResponse image(@RequestBody ImageR req) {
         req.setPrompt(PromptUtil.build(req.getMessage(), PromptConst.IMAGE));
-        return R.ok(chatService.image(req));
+        return CommonResponse.ok(chatService.image(req));
     }
 
     @GetMapping("/chat/getImageModels")
-    public R<List<AigcModel>> getImageModels() {
+    public CommonResponse<List<AigcModel>> getImageModels() {
         List<AigcModel> list = aigcModelService.getImageModels();
         list.forEach(i -> {
             i.setApiKey(null);
             i.setSecretKey(null);
         });
-        return R.ok(list);
+        return CommonResponse.ok(list);
     }
 }

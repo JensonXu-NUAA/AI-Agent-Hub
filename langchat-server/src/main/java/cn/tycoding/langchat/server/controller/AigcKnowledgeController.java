@@ -31,7 +31,7 @@ import cn.tycoding.langchat.ai.core.provider.KnowledgeStoreFactory;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -59,10 +59,10 @@ public class AigcKnowledgeController {
     private final KnowledgeStoreFactory knowledgeStore;
 
     @GetMapping("/list")
-    public R<List<AigcKnowledge>> list(AigcKnowledge data) {
+    public CommonResponse<List<AigcKnowledge>> list(AigcKnowledge data) {
         List<AigcKnowledge> list = kbService.list(Wrappers.<AigcKnowledge>lambdaQuery().orderByDesc(AigcKnowledge::getCreateTime));
         build(list);
-        return R.ok(list);
+        return CommonResponse.ok(list);
     }
 
     private void build(List<AigcKnowledge> records) {
@@ -87,7 +87,7 @@ public class AigcKnowledgeController {
     }
 
     @GetMapping("/page")
-    public R list(AigcKnowledge data, QueryPage queryPage) {
+    public CommonResponse list(AigcKnowledge data, QueryPage queryPage) {
         Page<AigcKnowledge> page = new Page<>(queryPage.getPage(), queryPage.getLimit());
         LambdaQueryWrapper<AigcKnowledge> queryWrapper = Wrappers.<AigcKnowledge>lambdaQuery()
                 .like(!StrUtil.isBlank(data.getName()), AigcKnowledge::getName, data.getName())
@@ -96,11 +96,11 @@ public class AigcKnowledgeController {
 
         build(iPage.getRecords());
 
-        return R.ok(MybatisUtil.getData(iPage));
+        return CommonResponse.ok(MybatisUtil.getData(iPage));
     }
 
     @GetMapping("/{id}")
-    public R<AigcKnowledge> findById(@PathVariable String id) {
+    public CommonResponse<AigcKnowledge> findById(@PathVariable String id) {
         AigcKnowledge knowledge = kbService.getById(id);
         if (knowledge.getEmbedStoreId() != null) {
             knowledge.setEmbedStore(embedStoreService.getById(knowledge.getEmbedStoreId()));
@@ -108,35 +108,35 @@ public class AigcKnowledgeController {
         if (knowledge.getEmbedModelId() != null) {
             knowledge.setEmbedModel(modelService.getById(knowledge.getEmbedModelId()));
         }
-        return R.ok(knowledge);
+        return CommonResponse.ok(knowledge);
     }
 
     @PostMapping
     @ApiLog("新增知识库")
     @SaCheckPermission("aigc:knowledge:add")
-    public R add(@RequestBody AigcKnowledge data) {
+    public CommonResponse add(@RequestBody AigcKnowledge data) {
         data.setCreateTime(String.valueOf(System.currentTimeMillis()));
         kbService.save(data);
         knowledgeStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("更新知识库")
     @SaCheckPermission("aigc:knowledge:update")
-    public R update(@RequestBody AigcKnowledge data) {
+    public CommonResponse update(@RequestBody AigcKnowledge data) {
         kbService.updateById(data);
         knowledgeStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除知识库")
     @SaCheckPermission("aigc:knowledge:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         kbService.removeKnowledge(id);
         knowledgeStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 }
 

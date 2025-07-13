@@ -24,7 +24,7 @@ import cn.tycoding.langchat.ai.biz.service.AigcAppApiService;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.server.consts.AppConst;
 import cn.tycoding.langchat.server.store.AppChannelStore;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -45,7 +45,7 @@ public class AigcAppApiController {
     private final AppChannelStore appChannelStore;
 
     @GetMapping("/create/{id}/{channel}")
-    public R create(@PathVariable String id, @PathVariable String channel) {
+    public CommonResponse create(@PathVariable String id, @PathVariable String channel) {
         String uuid = AppConst.PREFIX + IdUtil.simpleUUID();
         appApiService.save(new AigcAppApi()
                 .setAppId(id)
@@ -53,56 +53,56 @@ public class AigcAppApiController {
                 .setChannel(channel)
                 .setCreateTime(new Date()));
         appChannelStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @GetMapping("/list")
-    public R<List<AigcAppApi>> list(AigcAppApi data) {
+    public CommonResponse<List<AigcAppApi>> list(AigcAppApi data) {
         List<AigcAppApi> list = appApiService.list(Wrappers.<AigcAppApi>lambdaQuery()
                 .eq(StrUtil.isNotBlank(data.getAppId()), AigcAppApi::getAppId, data.getAppId())
                 .eq(StrUtil.isNotBlank(data.getChannel()), AigcAppApi::getChannel, data.getChannel())
                 .orderByDesc(AigcAppApi::getCreateTime));
-        return R.ok(list);
+        return CommonResponse.ok(list);
     }
 
     @GetMapping("/page")
-    public R<Dict> page(AigcAppApi data, QueryPage queryPage) {
+    public CommonResponse<Dict> page(AigcAppApi data, QueryPage queryPage) {
         IPage<AigcAppApi> iPage = appApiService.page(MybatisUtil.wrap(data, queryPage),
                 Wrappers.<AigcAppApi>lambdaQuery()
                         .like(StringUtils.isNotEmpty(data.getAppId()), AigcAppApi::getAppId, data.getAppId())
                         .eq(StrUtil.isNotBlank(data.getChannel()), AigcAppApi::getChannel, data.getChannel())
                         .orderByDesc(AigcAppApi::getCreateTime));
-        return R.ok(MybatisUtil.getData(iPage));
+        return CommonResponse.ok(MybatisUtil.getData(iPage));
     }
 
     @GetMapping("/{id}")
-    public R<AigcAppApi> findById(@PathVariable String id) {
+    public CommonResponse<AigcAppApi> findById(@PathVariable String id) {
         AigcAppApi api = appApiService.getById(id);
-        return R.ok(api);
+        return CommonResponse.ok(api);
     }
 
     @PostMapping
     @ApiLog("新增API渠道")
-    public R add(@RequestBody AigcAppApi data) {
+    public CommonResponse add(@RequestBody AigcAppApi data) {
         data.setCreateTime(new Date());
         appApiService.save(data);
         appChannelStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改API渠道")
-    public R update(@RequestBody AigcAppApi data) {
+    public CommonResponse update(@RequestBody AigcAppApi data) {
         appApiService.updateById(data);
         appChannelStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除API渠道")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         appApiService.removeById(id);
         appChannelStore.init();
-        return R.ok();
+        return CommonResponse.ok();
     }
 }

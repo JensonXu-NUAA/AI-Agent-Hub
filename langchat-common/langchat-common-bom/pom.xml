@@ -89,6 +89,11 @@
                 <artifactId>langchat-common-oss</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.tycoding</groupId>
+                <artifactId>langchat-common-repository</artifactId>
+                <version>1.0.0</version>
+            </dependency>
 
             <!-- 认证模块 -->
             <dependency>

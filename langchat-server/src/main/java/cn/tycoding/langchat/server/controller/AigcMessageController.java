@@ -23,7 +23,7 @@ import cn.tycoding.langchat.ai.biz.service.AigcMessageService;
 import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -42,26 +42,26 @@ public class AigcMessageController {
     private final AigcMessageService aigcMessageService;
 
     @GetMapping("/page")
-    public R list(AigcMessage data, QueryPage queryPage) {
+    public CommonResponse list(AigcMessage data, QueryPage queryPage) {
         LambdaQueryWrapper<AigcMessage> queryWrapper = Wrappers.<AigcMessage>lambdaQuery()
                 .like(!StrUtil.isBlank(data.getMessage()), AigcMessage::getMessage, data.getMessage())
                 .like(!StrUtil.isBlank(data.getUsername()), AigcMessage::getUsername, data.getUsername())
                 .eq(!StrUtil.isBlank(data.getRole()), AigcMessage::getRole, data.getRole())
                 .orderByDesc(AigcMessage::getCreateTime);
         IPage<AigcMessage> iPage = aigcMessageService.page(MybatisUtil.wrap(data, queryPage), queryWrapper);
-        return R.ok(MybatisUtil.getData(iPage));
+        return CommonResponse.ok(MybatisUtil.getData(iPage));
     }
 
     @GetMapping("/{id}")
-    public R getById(@PathVariable String id) {
-        return R.ok(aigcMessageService.getById(id));
+    public CommonResponse getById(@PathVariable String id) {
+        return CommonResponse.ok(aigcMessageService.getById(id));
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除会话消息")
     @SaCheckPermission("aigc:message:delete")
-    public R del(@PathVariable String id) {
-        return R.ok(aigcMessageService.removeById(id));
+    public CommonResponse del(@PathVariable String id) {
+        return CommonResponse.ok(aigcMessageService.removeById(id));
     }
 
 }

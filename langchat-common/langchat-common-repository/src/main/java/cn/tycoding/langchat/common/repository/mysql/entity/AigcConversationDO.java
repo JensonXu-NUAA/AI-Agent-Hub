@@ -1,38 +1,22 @@
-/*
- * Copyright (c) 2024 LangChat. TyCoding All Rights Reserved.
- *
- * Licensed under the GNU Affero General Public License, Version 3 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.gnu.org/licenses/agpl-3.0.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package cn.tycoding.langchat.ai.biz.entity;
+package cn.tycoding.langchat.common.repository.mysql.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
+
 import java.util.Date;
 
-/**
- * @author tycoding
- * @since 2024/1/4
- */
 @Data
 @Accessors(chain = true)
-public class AigcConversation implements Serializable {
+@TableName("aigc_conversation")
+public class AigcConversationDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -19545329638997333L;
@@ -85,4 +69,3 @@ public class AigcConversation implements Serializable {
     @TableField(exist = false)
     private Date endTime;
 }
-

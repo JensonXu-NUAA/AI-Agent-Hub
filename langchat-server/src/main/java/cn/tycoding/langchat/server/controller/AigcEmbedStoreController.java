@@ -26,7 +26,7 @@ import cn.tycoding.langchat.common.core.annotation.ApiLog;
 import cn.tycoding.langchat.common.core.component.SpringContextHolder;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -47,61 +47,61 @@ public class AigcEmbedStoreController {
     private final SpringContextHolder contextHolder;
 
     @GetMapping("/list")
-    public R<List<AigcEmbedStore>> list(AigcEmbedStore data) {
+    public CommonResponse<List<AigcEmbedStore>> list(AigcEmbedStore data) {
         List<AigcEmbedStore> list = embedStoreService.list(Wrappers.lambdaQuery());
         list.forEach(this::hide);
-        return R.ok(list);
+        return CommonResponse.ok(list);
     }
 
     @GetMapping("/page")
-    public R<Dict> page(AigcEmbedStore embedStore, QueryPage queryPage) {
+    public CommonResponse<Dict> page(AigcEmbedStore embedStore, QueryPage queryPage) {
         IPage<AigcEmbedStore> page = embedStoreService.page(MybatisUtil.wrap(embedStore, queryPage),
                 Wrappers.lambdaQuery());
         page.getRecords().forEach(this::hide);
-        return R.ok(MybatisUtil.getData(page));
+        return CommonResponse.ok(MybatisUtil.getData(page));
     }
 
     @GetMapping("/{id}")
-    public R<AigcEmbedStore> findById(@PathVariable String id) {
+    public CommonResponse<AigcEmbedStore> findById(@PathVariable String id) {
         AigcEmbedStore store = embedStoreService.getById(id);
         hide(store);
-        return R.ok(store);
+        return CommonResponse.ok(store);
     }
 
     @PostMapping
     @ApiLog("新增向量库")
     @SaCheckPermission("aigc:embed-store:add")
-    public R<AigcEmbedStore> add(@RequestBody AigcEmbedStore data) {
+    public CommonResponse<AigcEmbedStore> add(@RequestBody AigcEmbedStore data) {
         if (StrUtil.isNotBlank(data.getPassword()) && data.getPassword().contains("*")) {
             data.setPassword(null);
         }
         embedStoreService.save(data);
         SpringContextHolder.publishEvent(new EmbeddingRefreshEvent(data));
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PutMapping
     @ApiLog("修改向量库")
     @SaCheckPermission("aigc:embed-store:update")
-    public R update(@RequestBody AigcEmbedStore data) {
+    public CommonResponse update(@RequestBody AigcEmbedStore data) {
         if (StrUtil.isNotBlank(data.getPassword()) && data.getPassword().contains("*")) {
             data.setPassword(null);
         }
         embedStoreService.updateById(data);
         SpringContextHolder.publishEvent(new EmbeddingRefreshEvent(data));
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @DeleteMapping("/{id}")
     @ApiLog("删除向量库")
     @SaCheckPermission("aigc:embed-store:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         AigcEmbedStore store = embedStoreService.getById(id);
         if (store != null) {
             embedStoreService.removeById(id);
             contextHolder.unregisterBean(id);
         }
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     private void hide(AigcEmbedStore data) {

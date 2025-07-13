@@ -19,6 +19,7 @@ package cn.tycoding.langchat.ai.biz.service;
 import cn.tycoding.langchat.ai.biz.entity.AigcConversation;
 import cn.tycoding.langchat.ai.biz.entity.AigcMessage;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcConversationDO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -33,7 +34,7 @@ public interface AigcMessageService extends IService<AigcMessage> {
     /**
      * 获取会话列表
      */
-    List<AigcConversation> conversations(String userId);
+    List<AigcConversationDO> getConversationsByUserId(String userId);
 
     /**
      * 获取会话分页列表

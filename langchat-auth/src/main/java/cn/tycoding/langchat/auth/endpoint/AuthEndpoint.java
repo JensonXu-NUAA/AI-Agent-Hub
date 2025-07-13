@@ -30,7 +30,7 @@ import cn.tycoding.langchat.common.core.exception.ServiceException;
 import cn.tycoding.langchat.common.core.properties.AuthProps;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.dto.UserInfo;
 import cn.tycoding.langchat.upms.entity.SysRole;
 import cn.tycoding.langchat.upms.entity.SysUser;
@@ -66,7 +66,7 @@ public class AuthEndpoint {
     private final StringRedisTemplate redisTemplate;
     
     @PostMapping("/login")
-    public R login(@RequestBody UserInfo user) {
+    public CommonResponse login(@RequestBody UserInfo user) {
         if (StrUtil.isBlank(user.getUsername()) || StrUtil.isBlank(user.getPassword())) {
             throw new ServiceException("用户名或密码为空");
         }
@@ -91,17 +91,17 @@ public class AuthEndpoint {
                 .set(CacheConst.AUTH_TOKEN_INFO_KEY, tokenInfo);
         SysLogUtil.publish(1, "服务端登录", AuthUtil.getUsername());
         log.info("====> login success，token={}", tokenInfo.getTokenValue());
-        return R.ok(new TokenInfo().setToken(tokenInfo.tokenValue).setExpiration(tokenInfo.tokenTimeout));
+        return CommonResponse.ok(new TokenInfo().setToken(tokenInfo.tokenValue).setExpiration(tokenInfo.tokenTimeout));
     }
 
     @DeleteMapping("/logout")
-    public R logout() {
+    public CommonResponse logout() {
         StpUtil.logout();
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @PostMapping("/register")
-    public R emailRegister(@RequestBody SysUser data) {
+    public CommonResponse emailRegister(@RequestBody SysUser data) {
         if (StrUtil.isBlank(data.getUsername()) || StrUtil.isBlank(data.getPassword())) {
             throw new ServiceException("用户名或密码为空");
         }
@@ -127,25 +127,25 @@ public class AuthEndpoint {
                 .setCreateTime(new Date());
         userService.add(user);
         SysLogUtil.publish(1, "服务端注册", user.getUsername());
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @GetMapping("/info")
-    public R<UserInfo> info() {
+    public CommonResponse<UserInfo> info() {
         UserInfo userInfo = userService.info(AuthUtil.getUsername());
         userInfo.setPassword(null);
-        return R.ok(userInfo);
+        return CommonResponse.ok(userInfo);
     }
 
     @DeleteMapping("/token/{token}")
     @SaCheckPermission("auth:delete")
-    public R tokenDel(@PathVariable String token) {
+    public CommonResponse tokenDel(@PathVariable String token) {
         StpUtil.kickoutByTokenValue(token);
-        return R.ok();
+        return CommonResponse.ok();
     }
 
     @GetMapping("/token/page")
-    public R tokenPage(QueryPage queryPage) {
+    public CommonResponse tokenPage(QueryPage queryPage) {
         List<String> list = StpUtil.searchTokenValue("", queryPage.getPage() - 1, queryPage.getLimit(), true);
         List ids = redisTemplate.opsForValue().multiGet(list);
         Set<String> keys = redisTemplate.keys(AUTH_SESSION_PREFIX + "*");
@@ -183,6 +183,6 @@ public class AuthEndpoint {
         IPage page = new Page(queryPage.getPage(), queryPage.getLimit());
         page.setRecords(result);
         page.setTotal(keys == null ? 0 : keys.size());
-        return R.ok(MybatisUtil.getData(page));
+        return CommonResponse.ok(MybatisUtil.getData(page));
     }
 }

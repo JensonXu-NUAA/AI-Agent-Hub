@@ -18,6 +18,8 @@ package cn.tycoding.langchat.ai.biz.service;
 
 import cn.tycoding.langchat.ai.biz.entity.AigcModel;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcModelDO;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,7 +31,7 @@ import java.util.List;
  */
 public interface AigcModelService extends IService<AigcModel> {
 
-    List<AigcModel> getChatModels();
+    List<AigcModelDO> getChatModels();
 
     List<AigcModel> getImageModels();
 

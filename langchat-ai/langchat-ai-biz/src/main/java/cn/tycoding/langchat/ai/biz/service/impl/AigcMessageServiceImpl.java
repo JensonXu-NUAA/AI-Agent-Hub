@@ -17,6 +17,9 @@
 package cn.tycoding.langchat.ai.biz.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcConversationDO;
+import cn.tycoding.langchat.common.repository.mysql.repository.AigcConversationRepository;
 import cn.tycoding.langchat.ai.biz.entity.AigcConversation;
 import cn.tycoding.langchat.ai.biz.entity.AigcMessage;
 import cn.tycoding.langchat.ai.biz.mapper.AigcConversationMapper;
@@ -25,11 +28,16 @@ import cn.tycoding.langchat.ai.biz.service.AigcMessageService;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
 import cn.tycoding.langchat.upms.entity.SysUser;
 import cn.tycoding.langchat.upms.mapper.SysUserMapper;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import jakarta.annotation.Resource;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,17 +53,27 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class AigcMessageServiceImpl extends ServiceImpl<AigcMessageMapper, AigcMessage> implements
-        AigcMessageService {
+public class AigcMessageServiceImpl extends ServiceImpl<AigcMessageMapper, AigcMessage> implements AigcMessageService {
     private final AigcConversationMapper aigcConversationMapper;
     private final SysUserMapper userMapper;
 
+    @Resource
+    private final AigcConversationRepository aigcConversationRepository;
+
+    /**
+     * 根据用户ID获取会话窗口列表
+     *
+     * @param userId 用户ID，用于筛选属于该用户的对话
+     * @return 返回一个包含 AigcConversation 对象的列表，列表按照对话创建时间降序排列
+     */
     @Override
-    public List<AigcConversation> conversations(String userId) {
-        return aigcConversationMapper.selectList(
+    public List<AigcConversationDO> getConversationsByUserId(String userId) {
+        return aigcConversationRepository.findByUserId(userId);
+
+        /*return aigcConversationMapper.selectList(
                 Wrappers.<AigcConversation>lambdaQuery()
-                        .eq(AigcConversation::getUserId, userId)
-                        .orderByDesc(AigcConversation::getCreateTime));
+                        .eq(AigcConversation::getUserId, userId)  // 筛选出 userId 等于传入参数的对话记录
+                        .orderByDesc(AigcConversation::getCreateTime));  // 按照对话创建时间降序排列，最新创建的对话排在前面*/
     }
 
     @Override

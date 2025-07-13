@@ -20,7 +20,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.lang.Dict;
 import cn.tycoding.langchat.common.core.utils.MybatisUtil;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
-import cn.tycoding.langchat.common.core.utils.R;
+import cn.tycoding.langchat.common.core.utils.CommonResponse;
 import cn.tycoding.langchat.upms.entity.SysLog;
 import cn.tycoding.langchat.upms.service.SysLogService;
 import lombok.RequiredArgsConstructor;
@@ -40,19 +40,19 @@ public class SysLogController {
     private final SysLogService sysLogService;
 
     @GetMapping("/page")
-    public R<Dict> list(SysLog sysLog, QueryPage queryPage) {
-        return R.ok(MybatisUtil.getData(sysLogService.list(sysLog, queryPage)));
+    public CommonResponse<Dict> list(SysLog sysLog, QueryPage queryPage) {
+        return CommonResponse.ok(MybatisUtil.getData(sysLogService.list(sysLog, queryPage)));
     }
 
     @GetMapping("/{id}")
-    public R<SysLog> findById(@PathVariable String id) {
-        return R.ok(sysLogService.getById(id));
+    public CommonResponse<SysLog> findById(@PathVariable String id) {
+        return CommonResponse.ok(sysLogService.getById(id));
     }
 
     @DeleteMapping("/{id}")
     @SaCheckPermission("upms:log:delete")
-    public R delete(@PathVariable String id) {
+    public CommonResponse delete(@PathVariable String id) {
         sysLogService.delete(id);
-        return R.ok();
+        return CommonResponse.ok();
     }
 }
