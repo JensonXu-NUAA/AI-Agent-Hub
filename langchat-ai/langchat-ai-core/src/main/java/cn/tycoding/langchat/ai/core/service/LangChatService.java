@@ -19,6 +19,8 @@ package cn.tycoding.langchat.ai.core.service;
 import cn.tycoding.langchat.common.ai.dto.ChatReq;
 import cn.tycoding.langchat.common.ai.dto.ImageR;
 import dev.langchain4j.data.image.Image;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.StreamingResponseHandler;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.TokenStream;
 

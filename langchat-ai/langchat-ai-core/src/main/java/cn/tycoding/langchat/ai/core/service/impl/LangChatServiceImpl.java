@@ -27,19 +27,24 @@ import cn.tycoding.langchat.common.ai.dto.ImageR;
 import cn.tycoding.langchat.common.ai.properties.ChatProps;
 import cn.tycoding.langchat.common.ai.utils.PromptUtil;
 import cn.tycoding.langchat.common.core.exception.ServiceException;
+
 import dev.langchain4j.data.image.Image;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.image.ImageModel;
 import dev.langchain4j.model.output.Response;
+
 import dev.langchain4j.rag.DefaultRetrievalAugmentor;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.rag.query.Query;
+
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.store.embedding.filter.Filter;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

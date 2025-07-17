@@ -28,7 +28,6 @@ public interface ChatService {
 
     void chat(ChatReq req);
 
-
     /**
      * 文本请求
      */

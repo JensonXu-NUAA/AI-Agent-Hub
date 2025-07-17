@@ -34,9 +34,9 @@ import cn.tycoding.langchat.common.ai.utils.PromptUtil;
 import cn.tycoding.langchat.common.ai.utils.StreamEmitter;
 import cn.tycoding.langchat.common.core.constant.RoleEnum;
 import cn.tycoding.langchat.common.core.utils.CommonResponse;
-import cn.tycoding.langchat.common.repository.mysql.entity.AigcModelDO;
 import cn.tycoding.langchat.server.service.ChatService;
 import cn.tycoding.langchat.upms.utils.AuthUtil;
+import com.alibaba.fastjson.JSON;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
@@ -46,10 +46,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author tycoding
@@ -70,15 +71,24 @@ public class ChatEndpoint {
     @PostMapping("/chat/completions")
     @SaCheckPermission("chat:completions")
     public SseEmitter chat(@RequestBody ChatReq req) {
+        log.info("ChatReq: {}", JSON.toJSONString(req));
         StreamEmitter emitter = new StreamEmitter();
         req.setEmitter(emitter);
         req.setUserId(AuthUtil.getUserId());
         req.setUsername(AuthUtil.getUsername());
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        req.setExecutor(executor);
-        return emitter.streaming(executor, () -> {
-            chatService.chat(req);
-        });
+
+        Mono.fromRunnable(() -> chatService.chat(req))
+                .subscribeOn(Schedulers.boundedElastic())
+                .doOnError(error -> {
+                    log.error("chat error in conversation id: {} -> {}", req.getConversationId(), error.toString());
+                })
+                .doOnSuccess(
+                        res -> {
+                            log.info("chat success in conversation id: {} -> {}", req.getConversationId(), res);
+                        }
+                )
+                .subscribe();
+        return emitter.get();
     }
 
     @GetMapping("/app/info")

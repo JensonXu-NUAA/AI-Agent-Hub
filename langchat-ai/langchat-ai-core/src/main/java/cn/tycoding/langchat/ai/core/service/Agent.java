@@ -16,15 +16,20 @@
 
 package cn.tycoding.langchat.ai.core.service;
 
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.model.StreamingResponseHandler;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.UserMessage;
+import dev.langchain4j.service.V;
 
 /**
  * @author tycoding
  * @since 2024/3/8
  */
 public interface Agent {
+
+    void stream(@MemoryId String id, @UserMessage String message, @V("handler") StreamingResponseHandler<AiMessage> handler);
 
     TokenStream stream(@MemoryId String id, @UserMessage String message);
 

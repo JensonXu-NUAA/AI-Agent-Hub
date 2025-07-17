@@ -30,11 +30,14 @@ import cn.tycoding.langchat.common.core.constant.RoleEnum;
 import cn.tycoding.langchat.common.core.utils.ServletUtil;
 import cn.tycoding.langchat.server.service.ChatService;
 import cn.tycoding.langchat.server.store.AppStore;
+
 import dev.langchain4j.data.image.Image;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -94,7 +97,7 @@ public class ChatServiceImpl implements ChatService {
                     })
                     .start();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("启动聊天服务失败: {}", e.getMessage(), e);
             emitter.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
