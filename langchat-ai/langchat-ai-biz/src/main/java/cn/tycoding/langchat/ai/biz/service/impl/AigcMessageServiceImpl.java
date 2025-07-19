@@ -19,6 +19,7 @@ package cn.tycoding.langchat.ai.biz.service.impl;
 import cn.hutool.core.util.StrUtil;
 
 import cn.tycoding.langchat.common.repository.mysql.entity.AigcConversationDO;
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcMessageDO;
 import cn.tycoding.langchat.common.repository.mysql.repository.AigcConversationRepository;
 import cn.tycoding.langchat.ai.biz.entity.AigcConversation;
 import cn.tycoding.langchat.ai.biz.entity.AigcMessage;
@@ -26,6 +27,7 @@ import cn.tycoding.langchat.ai.biz.mapper.AigcConversationMapper;
 import cn.tycoding.langchat.ai.biz.mapper.AigcMessageMapper;
 import cn.tycoding.langchat.ai.biz.service.AigcMessageService;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
+import cn.tycoding.langchat.common.repository.mysql.repository.AigcMessageRepository;
 import cn.tycoding.langchat.upms.entity.SysUser;
 import cn.tycoding.langchat.upms.mapper.SysUserMapper;
 
@@ -59,6 +61,9 @@ public class AigcMessageServiceImpl extends ServiceImpl<AigcMessageMapper, AigcM
 
     @Resource
     private final AigcConversationRepository aigcConversationRepository;
+
+    @Resource
+    private final AigcMessageRepository aigcMessageRepository;
 
     /**
      * 根据用户ID获取会话窗口列表
@@ -137,6 +142,14 @@ public class AigcMessageServiceImpl extends ServiceImpl<AigcMessageMapper, AigcM
     public AigcMessage addMessage(AigcMessage message) {
         message.setCreateTime(new Date());
         baseMapper.insert(message);
+        return message;
+    }
+
+    @Override
+    @Transactional
+    public AigcMessageDO addMessage(AigcMessageDO message) {
+        message.setCreateTime(new Date());
+        aigcMessageRepository.insert(message);
         return message;
     }
 

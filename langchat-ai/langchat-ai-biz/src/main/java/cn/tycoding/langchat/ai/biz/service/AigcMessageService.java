@@ -20,6 +20,7 @@ import cn.tycoding.langchat.ai.biz.entity.AigcConversation;
 import cn.tycoding.langchat.ai.biz.entity.AigcMessage;
 import cn.tycoding.langchat.common.core.utils.QueryPage;
 import cn.tycoding.langchat.common.repository.mysql.entity.AigcConversationDO;
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcMessageDO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -57,6 +58,8 @@ public interface AigcMessageService extends IService<AigcMessage> {
     void delConversation(String conversationId);
 
     AigcMessage addMessage(AigcMessage message);
+
+    AigcMessageDO addMessage(AigcMessageDO message);
 
     void clearMessage(String conversationId);
 

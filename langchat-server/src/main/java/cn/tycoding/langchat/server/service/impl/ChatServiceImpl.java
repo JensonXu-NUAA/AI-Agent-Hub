@@ -35,6 +35,7 @@ import cn.tycoding.langchat.common.ai.utils.StreamEmitter;
 import cn.tycoding.langchat.common.core.constant.RoleEnum;
 import cn.tycoding.langchat.common.core.utils.ServletUtil;
 
+import cn.tycoding.langchat.common.repository.mysql.entity.AigcMessageDO;
 import cn.tycoding.langchat.server.service.ChatService;
 import cn.tycoding.langchat.server.store.AppStore;
 
@@ -128,6 +129,7 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<String> streamChat(ChatReq req) {
+        StringBuilder text = new StringBuilder();
         StreamingChatLanguageModel chatModel = provider.stream(req.getModelId());
         if (StrUtil.isBlank(req.getConversationId())) {
             req.setConversationId(IdUtil.simpleUUID());
@@ -139,13 +141,19 @@ public class ChatServiceImpl implements ChatService {
                 StreamingChatResponseHandler handler = new StreamingChatResponseHandler() {  // 处理聊天过程中的不同状态
                     @Override
                     public void onPartialResponse(String token) {
+                        text.append(token);
                         fluxSink.next(token);  // 将接收到的 token 发送到 Flux 流中
                     }
 
                     @Override
                     public void onCompleteResponse(ChatResponse chatResponse) {
+                        TokenUsage tokenUsage = chatResponse.tokenUsage();
                         fluxSink.complete();
                         log.info("stream chat success, conversation id: {}", req.getConversationId());
+
+                        req.setMessage(text.toString());
+                        req.setRole(RoleEnum.ASSISTANT.getName());
+                        saveMessage(req, tokenUsage);
                     }
 
                     @Override
@@ -172,6 +180,20 @@ public class ChatServiceImpl implements ChatService {
             message.setPromptTokens(inputToken);
             message.setTokens(outputToken);
             aigcMessageService.addMessage(message);
+        }
+    }
+
+    private void saveMessage(ChatReq req, TokenUsage tokenUsage) {
+        if (StrUtil.isNotBlank(req.getConversationId())) {
+            AigcMessageDO message = new AigcMessageDO();
+            BeanUtils.copyProperties(req, message);
+
+            message.setModel(req.getModelName());
+            message.setIp(ServletUtil.getIpAddr());
+            message.setPromptTokens(tokenUsage.inputTokenCount());
+            message.setTokens(tokenUsage.outputTokenCount());
+            aigcMessageService.addMessage(message);
+            log.info("stream chat saved, conversation id: {}", req.getConversationId());
         }
     }
 

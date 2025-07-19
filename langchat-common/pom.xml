@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.tycoding</groupId>
-        <artifactId>langchat</artifactId>
+        <artifactId>LangChain-Hub</artifactId>
         <version>${revision}</version>
     </parent>
 

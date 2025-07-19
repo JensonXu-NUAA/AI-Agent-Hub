@@ -26,7 +26,7 @@
     </parent>
 
     <groupId>cn.tycoding</groupId>
-    <artifactId>langchat</artifactId>
+    <artifactId>LangChain-Hub</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
