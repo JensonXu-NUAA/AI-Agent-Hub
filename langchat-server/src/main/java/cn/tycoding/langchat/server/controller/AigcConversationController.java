@@ -38,8 +38,8 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/aigc/conversation")
 @AllArgsConstructor
+@RequestMapping("/aigc/conversation")
 public class AigcConversationController {
 
     private final AigcMessageService aigcMessageService;

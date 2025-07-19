@@ -20,6 +20,8 @@ import cn.tycoding.langchat.ai.biz.entity.AigcOss;
 import cn.tycoding.langchat.common.ai.dto.ChatReq;
 import cn.tycoding.langchat.common.ai.dto.ImageR;
 
+import reactor.core.publisher.Flux;
+
 /**
  * @author tycoding
  * @since 2024/1/4
@@ -27,6 +29,8 @@ import cn.tycoding.langchat.common.ai.dto.ImageR;
 public interface ChatService {
 
     void chat(ChatReq req);
+
+    Flux<String> streamChat(ChatReq req);
 
     /**
      * 文本请求
