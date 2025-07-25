@@ -11,6 +11,12 @@ spring:
     active: dev
   main:
     allow-bean-definition-overriding: true
+  ai:
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY}
+      chat:
+        options:
+          model: qwen-turbo
 
   # Cache设置
   cache:

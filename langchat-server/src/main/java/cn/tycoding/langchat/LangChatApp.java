@@ -19,6 +19,7 @@ package cn.tycoding.langchat;
 import cn.tycoding.langchat.common.oss.config.EnableFileStorage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFileStorage
 @EnableAsync
 @SpringBootApplication
+@ComponentScan(basePackages = {"cn.tycoding.langchat", "cn.tycoding.springai"})
 public class LangChatApp {
 
     public static void main(String[] args) {

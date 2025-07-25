@@ -4,6 +4,8 @@ package cn.tycoding.langchat.server.controller;
 import cn.tycoding.langchat.common.ai.dto.ChatReq;
 import cn.tycoding.langchat.server.service.ChatService;
 
+import cn.tycoding.springai.core.data.dto.CustomChatDTO;
+import cn.tycoding.springai.core.service.SpringAIChatService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,6 +26,7 @@ import reactor.core.scheduler.Schedulers;
 public class AigcChatController {
 
     private final ChatService chatService;
+    private final SpringAIChatService springAIChatService;
 
     /**
      * 处理流式聊天请求
@@ -32,10 +35,16 @@ public class AigcChatController {
      * @return 一个 Flux 流，包含格式化为 SSE 的聊天消息，最后以 [DONE] 标识结束
      */
     @PostMapping(value = "/streamChat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamChat(@RequestBody ChatReq chatReq) {
-        return Mono.fromCallable(() -> chatService.streamChat(chatReq))
+    public Flux<String> streamChat(@RequestBody CustomChatDTO chatReq) {
+        /*return Mono.fromCallable(() -> springAIChatService.streamChat(chatReq))
                 .flatMapMany(flux -> flux)
                 .map(token -> "data: " + token + "\n\n")
-                .subscribeOn(Schedulers.boundedElastic());  // 异步处理
+                .subscribeOn(Schedulers.boundedElastic());  // 异步处理*/
+
+        return springAIChatService.streamChat(chatReq)
+                .onErrorResume(throwable -> {
+                    // 错误处理
+                    return Flux.just("对不起，处理您的请求时出现了错误：" + throwable.getMessage());
+                });
     }
 }
