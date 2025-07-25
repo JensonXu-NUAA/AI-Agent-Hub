@@ -36,15 +36,8 @@ public class AigcChatController {
      */
     @PostMapping(value = "/streamChat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamChat(@RequestBody CustomChatDTO chatReq) {
-        /*return Mono.fromCallable(() -> springAIChatService.streamChat(chatReq))
+        return Mono.fromCallable(() -> springAIChatService.streamChat(chatReq))
                 .flatMapMany(flux -> flux)
-                .map(token -> "data: " + token + "\n\n")
-                .subscribeOn(Schedulers.boundedElastic());  // 异步处理*/
-
-        return springAIChatService.streamChat(chatReq)
-                .onErrorResume(throwable -> {
-                    // 错误处理
-                    return Flux.just("对不起，处理您的请求时出现了错误：" + throwable.getMessage());
-                });
+                .subscribeOn(Schedulers.boundedElastic());  // 异步处理
     }
 }

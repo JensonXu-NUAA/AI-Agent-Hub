@@ -45,6 +45,9 @@ sa-token:
   token-name: Authorization
 
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5level --- [%40.40thread] %-40.40logger{39} : %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5level --- [%40.40thread] %-40.40logger{39} : %msg%n"
   level:
     dev:
       langchain4j: DEBUG

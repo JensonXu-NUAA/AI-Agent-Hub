@@ -2,10 +2,13 @@ package cn.tycoding.springai.core.service.impl;
 
 import cn.tycoding.springai.core.data.dto.CustomChatDTO;
 import cn.tycoding.springai.core.service.SpringAIChatService;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import reactor.core.publisher.Flux;
 
 @Slf4j
