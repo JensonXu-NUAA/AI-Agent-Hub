@@ -1,9 +1,5 @@
 package cn.tycoding.langchat.server.controller;
 
-
-import cn.tycoding.langchat.common.ai.dto.ChatReq;
-import cn.tycoding.langchat.server.service.ChatService;
-
 import cn.tycoding.springai.core.data.dto.CustomChatDTO;
 import cn.tycoding.springai.core.service.SpringAIChatService;
 import lombok.AllArgsConstructor;
@@ -25,7 +21,6 @@ import reactor.core.scheduler.Schedulers;
 @RequestMapping("/aigc/chat")
 public class AigcChatController {
 
-    private final ChatService chatService;
     private final SpringAIChatService springAIChatService;
 
     /**
