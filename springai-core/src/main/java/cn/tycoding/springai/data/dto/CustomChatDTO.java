@@ -1,4 +1,4 @@
-package cn.tycoding.springai.core.data.dto;
+package cn.tycoding.springai.data.dto;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
@@ -11,11 +11,12 @@ public class CustomChatDTO {
     private String message;
     private String chatId;
     private String role;
+    private String modelName;
     private String conversationId;
 
 
     public String getConversationId() {
-        if (StringUtils.isAllBlank(conversationId)) {
+        if (StringUtils.isBlank(conversationId)) {
             this.conversationId = UUID.randomUUID().toString();
         }
         return conversationId;

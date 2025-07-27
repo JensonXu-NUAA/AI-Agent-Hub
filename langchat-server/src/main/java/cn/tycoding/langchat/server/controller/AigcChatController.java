@@ -1,6 +1,6 @@
 package cn.tycoding.langchat.server.controller;
 
-import cn.tycoding.springai.core.data.dto.CustomChatDTO;
+import cn.tycoding.springai.data.dto.CustomChatDTO;
 import cn.tycoding.springai.core.service.SpringAIChatService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
